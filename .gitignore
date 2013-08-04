@@ -1,0 +1,8 @@
+*.pyc
+tvdb_api.py
+tvdb_cache.py
+tvdb_exceptions.py
+tvdb_ui.py
+dateutil
+pytz
+six.py
