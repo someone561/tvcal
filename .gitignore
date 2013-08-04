@@ -6,3 +6,4 @@ tvdb_ui.py
 dateutil
 pytz
 six.py
+icalendar

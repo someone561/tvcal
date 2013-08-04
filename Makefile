@@ -5,7 +5,7 @@ icalendar-version=3.5
 six-version=1.3.0
 tbdb_api-version=1.8.2
 
-all: pytz dateutil six.py tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py
+all: pytz dateutil icalendar six.py tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py
 
 clean:
 	rm -rf pytz dateutil icalendar six.py tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py *.pyc
@@ -22,7 +22,8 @@ dateutil:
 	
 icalendar:
 	wget https://pypi.python.org/packages/source/i/icalendar/icalendar-$(icalendar-version).tar.gz --quiet -O - | tar xvz
-	mv 
+	mv icalendar-$(icalendar-version)/src/icalendar .
+	rm -r icalendar-$(icalendar-version)
 
 six.py:
 	wget https://pypi.python.org/packages/source/s/six/six-$(six-version).tar.gz --quiet -O - | tar xvz

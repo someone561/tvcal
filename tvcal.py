@@ -9,13 +9,6 @@ import json
 
 sids = ['The Big Bang Theory', 'NCIS', 'Mad Men', 'Futurama', 'Game of Thrones', 'Breaking Bad', 'The Simpsons']
 
-
-"""if __name__ == "__main__":
-    print 'Content-Type: text/plain'
-    print ''
-    print getCalendar(sids)
-    """
-
 class Tvcal(webapp2.RequestHandler):
     def get(self, sids):
         self.response.headers['Content-Type'] = 'text/plain' #'text/calendar'
@@ -24,10 +17,7 @@ class Tvcal(webapp2.RequestHandler):
     def getCalendar(self, sids):
         logging.basicConfig()
         logging.getLogger().setLevel(logging.DEBUG)
-        #tvdb = tvdb_api.Tvdb(apikey="0BB856A59C51D607")
         tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache))
-        #logging.debug(tvdb['NCIS'])
-        #return tvdb['NCIS']
         cal = Calendar()
         cal.add('prodid', '-//tvcal//mxm.dk//')
         cal.add('version', '2.0')
