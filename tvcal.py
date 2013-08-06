@@ -2,32 +2,26 @@ import tvdb_api, tvdb_ui
 import datetime
 from icalendar import Calendar, Event
 import urllib2
-import logging
 from GMemcache import GMemcache
 import webapp2
 import json
 
-sids = ['The Big Bang Theory', 'NCIS', 'Mad Men', 'Futurama', 'Game of Thrones', 'Breaking Bad', 'The Simpsons']
-
 class Tvcal(webapp2.RequestHandler):
     def get(self, sids):
-        self.response.headers['Content-Type'] = 'text/plain' #'text/calendar'
+        self.response.headers['Content-Type'] = 'text/calendar'
         self.response.out.write(self.getCalendar(sids.split(',')))
         
     def getCalendar(self, sids):
-        logging.basicConfig()
-        logging.getLogger().setLevel(logging.DEBUG)
         tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache))
         cal = Calendar()
         cal.add('prodid', '-//tvcal//mxm.dk//')
-        cal.add('version', '2.0')
-    
+        cal.add('version', '2.0')    
     
         for sid in sids:
             serie = tvdb[int(sid)]
-            [cal.add_component(self.createEvent(episode, sid)) for season in serie.values() 
+            [cal.add_component(self.createEvent(episode, serie['seriesname'])) for season in serie.values() 
                 for episode in season.values() 
-                    if episode['firstaired'] and datetime.datetime.strptime(episode['firstaired'], "%Y-%m-%d").date() >= (datetime.date.today()-datetime.timedelta(weeks=2))]
+                    if episode['firstaired']]
         return cal.to_ical()
     
     def createEvent(self, episode, serie):
@@ -51,14 +45,13 @@ class List(tvdb_ui.BaseUI):
 
 class Search(webapp2.RequestHandler):
     def get(self, search):
-        # TODO JSON
-        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.headers['Content-Type'] = 'application/json'
         tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache), custom_ui=List)
         tvdb[search]      
         self.response.out.write(json.dumps(allSeries))
     
         
-app = webapp2.WSGIApplication([('/tvcal/([\d,]+)', Tvcal), 
-                               ('/tvcal/([\d,]+).ics', Tvcal),
+app = webapp2.WSGIApplication([('/tvdb-ical/([\d,]+)', Tvcal), 
+                               ('/tvdb-ical/([\d,]+).ics', Tvcal),
                                ('/search/(.*)', Search)],
                               debug=True)

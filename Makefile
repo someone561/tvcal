@@ -5,7 +5,7 @@ icalendar-version=3.5
 six-version=1.3.0
 tbdb_api-version=1.8.2
 
-all: pytz dateutil icalendar six.py tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py
+all: pytz dateutil icalendar six.py tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py dist
 
 clean:
 	rm -rf pytz dateutil icalendar six.py tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py *.pyc
@@ -35,5 +35,8 @@ tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py:
 	mv tvdb_api-$(tbdb_api-version)/tvdb*.py .
 	rm -r tvdb_api-$(tbdb_api-version)
 	
-run:
+dist: app
+	grunt
+
+run: all
 	$(GOOGLE_APP_ENGINE)/dev_appserver.py .

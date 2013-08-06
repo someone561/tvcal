@@ -1,0 +1,41 @@
+<div class="hero-unit">
+	<h1>tvdb-ical</h1>
+	<p>A generator for <a href="https://en.wikipedia.org/wiki/ICalendar">ICalendar</a> out of <a href="http://thetvdb.com/">thetvdb.com</a> airing dates.</p>
+</div>
+<div class="well pull-left span6">{{serverName}}/tvdb-ical/{{selectedSeriesIds.toArray().join(',')}}</div>
+<form id="custom-search-form"
+	class="form-search form-horizontal pull-right" ng-submit="submitSeach()"
+	action="">
+	<div class="input-append span4">
+		<input type="text" class="search-query" placeholder="Search" ng-model="search">
+		<button type="submit" class="btn">
+			<i class="icon-search"></i>
+		</button>
+	</div>
+</form>
+<div class="clearfix"></div>
+<p class="text-info">Simple search your series and then copy the URL above and add to your calendar program.</p>
+
+<ul class="thumbnails">
+	<li class="span10" ng-repeat="serie in searchResult">
+		<div class="thumbnail">
+			<img ng-src="{{'http://thetvdb.com/banners/' + serie.banner}}" ng-show="serie.banner" alt="{{serie.seriesname + ' Banner'}}">
+			<div class="caption">
+								<i class="pull-left" ng-click="isCollapsed = !isCollapsed" ng-class="{'icon-plus-sign':isCollapsed, 'icon-minus-sign': !isCollapsed}"></i>
+				<h3 class="pull-left">
+					<a href="{{'http://www.thetvdb.com/?tab=series&id=' + serie.id + '&lid=' + serie.lid}}">{{serie.seriesname}}</a>
+				</h3>
+				<p class="pull-right">
+					<a ng-click="addSerie(serie.id)" ng-hide="selectedSeriesIds.contains(serie.id)" href="" class="btn btn-primary">Select</a>
+					<a ng-click="removeSerie(serie.id)" ng-show="selectedSeriesIds.contains(serie.id)" href="" class="btn">Deselect</a>
+				</p>
+				<div class="clearfix"></div>
+				<div>
+					<div collapse="isCollapsed">
+						<div class="well">{{serie.overview}}</div> 
+					</div>
+				</div>
+			</div>
+		</div>
+	</li>
+</ul>
