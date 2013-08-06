@@ -27,3 +27,7 @@ skip_files:
 - ^node_modules
 - ^test
 - ^app
+
+libraries:
+- name: webapp2
+  version: "latest"
