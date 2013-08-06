@@ -3,6 +3,8 @@ tvdb-ical
 
 A generator for [ICalendar](https://en.wikipedia.org/wiki/ICalendar) out of [thetvdb.com](http://thetvdb.com) airing dates.
 
+This code is running under [https://tvdb-ical.appspot.com/](https://tvdb-ical.appspot.com/)
+
 Used Frameworks and library
 ------
 * [Google App Engine](https://appengine.google.com/‎) for Python
