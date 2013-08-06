@@ -5,7 +5,7 @@ icalendar-version=3.5
 six-version=1.3.0
 tbdb_api-version=1.8.2
 
-all: pytz dateutil icalendar six.py tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py dist
+all: pytz dateutil icalendar six.py tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py node_modules app/bower_components dist 
 
 clean:
 	rm -rf pytz dateutil icalendar six.py tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py *.pyc
@@ -37,6 +37,12 @@ tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py:
 	
 dist: app
 	grunt
+
+node_modules:
+	npm install
+
+app/bower_components:
+	bower install
 
 run: all
 	$(GOOGLE_APP_ENGINE)/dev_appserver.py .
