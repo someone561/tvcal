@@ -36,4 +36,4 @@ tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py:
 	rm -r tvdb_api-$(tbdb_api-version)
 	
 run:
-	~/google_appengine/dev_appserver.py .
+	$(GOOGLE_APP_ENGINE)/dev_appserver.py .
