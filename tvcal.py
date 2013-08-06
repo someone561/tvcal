@@ -12,7 +12,7 @@ class Tvcal(webapp2.RequestHandler):
         self.response.out.write(self.getCalendar(sids.split(',')))
         
     def getCalendar(self, sids):
-        tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache))
+        tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache), apikey='DCDC02D859CD26EF')
         cal = Calendar()
         cal.add('prodid', '-//tvcal//mxm.dk//')
         cal.add('version', '2.0')    
