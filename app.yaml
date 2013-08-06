@@ -18,3 +18,12 @@ handlers:
 - url: /
   static_dir: dist
 
+skip_files:
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^node_modules
+- ^test
+- ^app
