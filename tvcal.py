@@ -5,6 +5,7 @@ import urllib2
 from GMemcache import GMemcache
 import webapp2
 import json
+from DatastoreCache import DataStoreCache
 
 class Tvcal(webapp2.RequestHandler):
     def get(self, sids):
@@ -46,7 +47,7 @@ class List(tvdb_ui.BaseUI):
 class Search(webapp2.RequestHandler):
     def get(self, search):
         self.response.headers['Content-Type'] = 'application/json'
-        tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache), custom_ui=List)
+        tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache, DataStoreCache), custom_ui=List)
         tvdb[search]      
         self.response.out.write(json.dumps(allSeries))
     

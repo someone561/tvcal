@@ -3,8 +3,12 @@ from hashlib import md5
 import urllib2
 import StringIO
 import httplib
+import logging
 
 class GMemcache(urllib2.BaseHandler):
+    def __init__(self, maxAge = 21600):
+        self.maxAge = maxAge
+    
     def default_open(self, request):
         """Handles GET requests, if the response is cached it returns it
         """
@@ -17,11 +21,12 @@ class GMemcache(urllib2.BaseHandler):
         headerdata = memcache.get(header)
         bodydata = memcache.get(body)
         if (headerdata is not None) & (bodydata is not None):
+            logging.info("Memcache hit")
             return CachedResponse(
                 headerdata,
                 bodydata,
                 request.get_full_url(),
-                set_cache_header = True
+                "memcache"
             )
         else:
             return None  # let the next handler handle
@@ -33,17 +38,19 @@ class GMemcache(urllib2.BaseHandler):
         if (request.get_method() == "GET"
             and str(response.code).startswith("2")
         ):
-            thumb = md5(request.get_full_url()).hexdigest()
-            header = thumb + ".headers"
-            body = thumb + ".body"
-            memcache.add(header, str(response.info()), 21600)
             responseText = response.read()
-            memcache.add(body, responseText, 21600)
+            if 'x-memcache-cache' not in response.info():
+                thumb = md5(request.get_full_url()).hexdigest()
+                header = thumb + ".headers"
+                body = thumb + ".body"
+                logging.info("Memcache write")
+                memcache.add(header, str(response.info()), self.maxAge)
+                memcache.add(body, responseText, self.maxAge)
             return CachedResponse(
                 str(response.info()),
                 responseText,
                 request.get_full_url(),
-                set_cache_header = True
+                ""
             )
         else:
             return response
@@ -56,15 +63,15 @@ class CachedResponse(StringIO.StringIO):
     """
 
     #@locked_function
-    def __init__(self, headerdata, bodydata, url, set_cache_header=True):
+    def __init__(self, headerdata, bodydata, url, cache_header=""):
         StringIO.StringIO.__init__(self, bodydata)
 
         self.url     = url
         self.code    = 200
         self.msg     = "OK"
         headerbuf = headerdata
-        if set_cache_header:
-            headerbuf += "x-local-cache: memcache\r\n"
+        if cache_header != "":
+            headerbuf += "x-%s-cache: true\r\n" % (cache_header)
         self.headers = httplib.HTTPMessage(StringIO.StringIO(headerbuf))
 
     def info(self):
