@@ -23,7 +23,6 @@ class DataStoreCache(urllib2.BaseHandler):
 
         thumb = md5(request.get_full_url()).hexdigest()
         cache = HttpCache.get_by_key_name(thumb)
-        #cache = db.GqlQuery("SELECT * FROM HttpCache WHERE __key__ = :1", thumb).get()
         if (cache is not None):
             logging.info("Datastore Cache hit")
             if (datetime.datetime.now() - cache.created > datetime.timedelta(seconds=self.maxAge)):

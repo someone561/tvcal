@@ -10,6 +10,9 @@ handlers:
 
 - url: /tvdb-ical/.*
   script: tvcal.app
+  
+- url: /banners/.*
+  script: tvcal.app
 
 - url: /
   static_files: dist/index.html
