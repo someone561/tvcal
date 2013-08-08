@@ -34,23 +34,11 @@ class Tvcal(webapp2.RequestHandler):
         event.add('dtstart', datetime.datetime.strptime(episode['firstaired'], "%Y-%m-%d").date())
         return event
 
-allSeries = []
-
-class List(tvdb_ui.BaseUI):
-    # we want the list of all possibles, the result does not matter
-    def selectSeries(self, series):
-        # TODO: A bad hack and sure not threadsafe :(
-        global allSeries
-        allSeries = series;
-        return series[0]   
-        
-
 class Search(webapp2.RequestHandler):
     def get(self, search):
         self.response.headers['Content-Type'] = 'application/json'
-        tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache, DataStoreCache), apikey='DCDC02D859CD26EF', custom_ui=List)
-        tvdb[search]      
-        self.response.out.write(json.dumps(allSeries))
+        tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache, DataStoreCache), apikey='DCDC02D859CD26EF')
+        self.response.out.write(json.dumps(tvdb.search(search)))
 
 class Banner(db.Model):
     image = db.BlobProperty()

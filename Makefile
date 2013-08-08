@@ -3,7 +3,7 @@ pytz-version=2013b
 dateutil-version=2.1
 icalendar-version=3.5
 six-version=1.3.0
-tbdb_api-version=1.8.2
+tbdb_api-version=8441558b6758f6d79fff0691f6b2a77d3d06fd99
 
 all: pytz dateutil icalendar six.py tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py node_modules app/bower_components dist 
 
@@ -31,9 +31,13 @@ six.py:
 	rm -r six-$(six-version)
 	
 tvdb_api.py tvdb_cache.py tvdb_exceptions.py tvdb_ui.py:
-	wget https://pypi.python.org/packages/source/t/tvdb_api/tvdb_api-$(tbdb_api-version).tar.gz --quiet -O - | tar xvz
-	mv tvdb_api-$(tbdb_api-version)/tvdb*.py .
-	rm -r tvdb_api-$(tbdb_api-version)
+	wget https://raw.github.com/dbr/tvdb_api/$(tbdb_api-version)/tvdb_api.py
+	wget https://raw.github.com/dbr/tvdb_api/$(tbdb_api-version)/tvdb_cache.py
+	wget https://raw.github.com/dbr/tvdb_api/$(tbdb_api-version)/tvdb_exceptions.py
+	wget https://raw.github.com/dbr/tvdb_api/$(tbdb_api-version)/tvdb_ui.py
+	#wget https://pypi.python.org/packages/source/t/tvdb_api/tvdb_api-$(tbdb_api-version).tar.gz --quiet -O - | tar xvz
+	#mv tvdb_api-$(tbdb_api-version)/tvdb*.py .
+	#rm -r tvdb_api-$(tbdb_api-version)
 	
 dist: app
 	grunt
