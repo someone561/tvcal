@@ -43,17 +43,23 @@ class Search(webapp2.RequestHandler):
         self.response.out.write(json.dumps(tvdb.search(search)))
 
 class Banner(db.Model):
-    image = db.BlobProperty()
+    image = db.BlobProperty(required=True)
+    created = db.DateTimeProperty()
 
 class Graphical(webapp2.RequestHandler):
     def get(self, img):
-        self.response.headers['Content-Type'] = 'image/jpeg'
         banner = Banner.get_by_key_name(img)
         if (banner is None):
-            response = urllib2.urlopen("http://thetvdb.com/banners/graphical/%s?apikey=%s" % (img, apikey))
+            try:
+                response = urllib2.urlopen("http://thetvdb.com/banners/graphical/%s?apikey=%s" % (img, apikey))
+            except urllib2.HTTPError:
+                self.error(404)
+                return
             banner = Banner(key_name=img,
-               image=response.read())
+               image=response.read(),
+               created=datetime.datetime.now())
             banner.put()
+        self.response.headers['Content-Type'] = 'image/jpeg'
         self.response.out.write(banner.image)
         
 app = webapp2.WSGIApplication([('/tvdb-ical/([\d,]+)', Tvcal), 
