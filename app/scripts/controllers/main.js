@@ -16,8 +16,3 @@ angular.module('tvcalApp')
 	$scope.isCollapsed = true;
 	$scope.serverName = window.location.protocol + '//' + window.location.host;
 });
-
-angular.module('tvcalAppServices', ['ngResource']).
-factory('Series', function($resource){
-	return $resource('/search/:search');
-});

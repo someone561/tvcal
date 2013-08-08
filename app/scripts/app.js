@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('tvcalApp', ['tvcalAppServices', 'ui.bootstrap'])
+angular.module('tvcalApp', ['ngResource', 'ui.bootstrap'])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
