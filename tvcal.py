@@ -1,4 +1,4 @@
-import tvdb_api, tvdb_ui
+import tvdb_api
 import datetime
 from icalendar import Calendar, Event
 import urllib2
@@ -8,13 +8,15 @@ import json
 from DatastoreCache import DataStoreCache
 from google.appengine.ext import db
 
+apikey='DCDC02D859CD26EF'
+
 class Tvcal(webapp2.RequestHandler):
     def get(self, sids):
         self.response.headers['Content-Type'] = 'text/calendar'
         self.response.out.write(self.getCalendar(sids.split(',')))
         
     def getCalendar(self, sids):
-        tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache, DataStoreCache), apikey='DCDC02D859CD26EF')
+        tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache, DataStoreCache), apikey=apikey)
         cal = Calendar()
         cal.add('prodid', '-//tvcal//mxm.dk//')
         cal.add('version', '2.0')    
@@ -37,7 +39,7 @@ class Tvcal(webapp2.RequestHandler):
 class Search(webapp2.RequestHandler):
     def get(self, search):
         self.response.headers['Content-Type'] = 'application/json'
-        tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache, DataStoreCache), apikey='DCDC02D859CD26EF')
+        tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(GMemcache, DataStoreCache), apikey=apikey)
         self.response.out.write(json.dumps(tvdb.search(search)))
 
 class Banner(db.Model):
@@ -48,7 +50,7 @@ class Graphical(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'image/jpeg'
         banner = Banner.get_by_key_name(img)
         if (banner is None):
-            response = urllib2.urlopen("http://thetvdb.com/banners/graphical/" + img)
+            response = urllib2.urlopen("http://thetvdb.com/banners/graphical/%s?apikey=%s" % (img, apikey))
             banner = Banner(key_name=img,
                image=response.read())
             banner.put()
