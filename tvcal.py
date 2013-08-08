@@ -69,5 +69,5 @@ class Graphical(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([('/tvdb-ical/([\d,]+)', Tvcal), 
                                ('/tvdb-ical/([\d,]+).ics', Tvcal),
                                ('/search/(.*)', Search),
-                               ('/banners/graphical/(.*)', Graphical)],
+                               ('/tvdbimages/graphical/(.*)', Graphical)],
                               debug=True)

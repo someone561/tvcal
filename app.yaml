@@ -11,7 +11,7 @@ handlers:
 - url: /tvdb-ical/.*
   script: tvcal.app
   
-- url: /banners/.*
+- url: /tvdbimages/.*
   script: tvcal.app
 
 - url: /

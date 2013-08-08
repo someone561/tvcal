@@ -11,9 +11,9 @@ describe('Filter: tvdbbanner', function () {
     tvdbbanner = $filter('tvdbbanner');
   }));
 
-  it('should return the input prefixed with "/banners/"', function () {
+  it('should return the input prefixed with "/tvdbimages/"', function () {
     var text = 'angularjs.png';
-    expect(tvdbbanner(text)).toBe('/banners/' + text);
+    expect(tvdbbanner(text)).toBe('/tvdbimages/' + text);
   });
   
   it('should be empty if null, undefined, or empty goes in', function () {

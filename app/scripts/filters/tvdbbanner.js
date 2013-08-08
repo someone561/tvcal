@@ -3,6 +3,6 @@
 angular.module('tvcalApp')
   .filter('tvdbbanner', function () {
     return function (input) {
-      return input ? '/banners/' + input : '';
+      return input ? '/tvdbimages/' + input : '';
     };
   });
