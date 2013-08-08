@@ -30,6 +30,7 @@ skip_files:
 - ^node_modules
 - ^test
 - ^app
+- ^dist/bower_components
 
 libraries:
 - name: webapp2
