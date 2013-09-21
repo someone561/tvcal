@@ -46,14 +46,20 @@ class Tvcal(webapp2.RequestHandler):
         return event
         
     def createCalendarEntry(self, serie):
-        cache = CalendarEntry(key_name=serie['id'],
-                      created=datetime.datetime.now())
+        summaries = []
+        dates = []
+        uids = []
         for season in serie.values():
             for episode in season.values():
                 if (episode['firstaired']):
-                    cache.summaries.append('%s S%02dE%02d %s' % (serie['seriesname'], int(episode['seasonnumber']), int(episode['episodenumber']), episode['episodename']))
-                    cache.dates.append(episode['firstaired'])
-                    cache.uids.append(episode['id'])
+                    summaries.append('%s S%02dE%02d %s' % (serie['seriesname'], int(episode['seasonnumber']), int(episode['episodenumber']), episode['episodename']))
+                    dates.append(episode['firstaired'])
+                    uids.append(episode['id'])
+        cache = CalendarEntry(key_name=serie['id'],
+            summaries=summaries,
+            dates=dates,
+            uids=uids,
+            created=datetime.datetime.now())
         return cache
     
     def getCache(self, tvdb, sid):
