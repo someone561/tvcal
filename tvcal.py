@@ -26,6 +26,7 @@ class Tvcal(webapp2.RequestHandler):
         self.response.out.write(self.getCalendar(sids.split(',')))
         
     def getCalendar(self, sids):
+        # Caching is done on applikation layer
         tvdb = tvdb_api.Tvdb(cache=False, apikey=apikey)
         cal = Calendar()
         cal.add('prodid', '-//tvcal//mxm.dk//')
@@ -71,6 +72,8 @@ class Tvcal(webapp2.RequestHandler):
         if (cache is not None):
             logging.info("Datastore Cache hit")
             if (datetime.datetime.now() - cache.created < datetime.timedelta(seconds=self.maxAge)):
+                logging.info("write to memcache")
+                memcache.add(sid, cache, self.maxAge)
                 return cache
             logging.info("But Cache is to old")
             cache.delete()
@@ -84,11 +87,41 @@ class Tvcal(webapp2.RequestHandler):
     def getDetails(self, episode, serie):
         return ('%s S%02dE%02d %s' % (serie, int(episode['seasonnumber']), int(episode['episodenumber']), episode['episodename']), episode['firstaired']) 
 
+class SearchResult(db.Model):
+    result = db.TextProperty()
+    created = db.DateTimeProperty(required=True)
+
 class Search(webapp2.RequestHandler):
+    maxAge = 21600
+    
     def get(self, search):
         self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(self.getSearchResult(search))
+        
+    def getSearchResult(self, search):
+        cache = memcache.get('Search_' + search)
+        if cache is not None:
+            logging.info("Memcache hit")
+            return cache.result
+        cache = SearchResult.get_by_key_name(search)
+        if (cache is not None):
+            logging.info("Datastore Cache hit")
+            if (datetime.datetime.now() - cache.created < datetime.timedelta(seconds=self.maxAge)):
+                logging.info("write to memcache")
+                memcache.add('Search_' + search, cache, self.maxAge)
+                return cache.result
+            logging.info("But Cache is to old")
+            cache.delete()
+        logging.info("Query tvdb")
+        # Caching is done on applikation layer
         tvdb = tvdb_api.Tvdb(cache=urllib2.build_opener(DataStoreCache), apikey=apikey)
-        self.response.out.write(json.dumps(tvdb.search(search)))
+        cache = SearchResult(key_name=search,
+            result=json.dumps(tvdb.search(search)),
+            created=datetime.datetime.now())
+        cache.put()
+        logging.info("write to memcache")
+        memcache.add('Search_' + search, cache, self.maxAge)
+        return cache.result
 
 class Banner(db.Model):
     image = db.BlobProperty(required=True)
