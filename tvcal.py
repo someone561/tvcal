@@ -7,6 +7,7 @@ import json
 import logging
 from DatastoreCache import DataStoreCache
 from google.appengine.ext import db
+from google.appengine.api import memcache
 
 apikey='DCDC02D859CD26EF'
 
@@ -56,6 +57,10 @@ class Tvcal(webapp2.RequestHandler):
         return cache
     
     def getCache(self, tvdb, sid):
+        cache = memcache.get(sid)
+        if cache is not None:
+            logging.info("Memcache hit")
+            return cache
         cache = CalendarEntry.get_by_key_name(sid)
         if (cache is not None):
             logging.info("Datastore Cache hit")
@@ -66,6 +71,8 @@ class Tvcal(webapp2.RequestHandler):
         logging.info("Query tvdb")
         cache = self.createCalendarEntry(tvdb[int(sid)])
         cache.put()
+        logging.info("write to memcache")
+        memcache.add(sid, cache, self.maxAge)
         return cache
         
     def getDetails(self, episode, serie):
