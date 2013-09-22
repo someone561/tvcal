@@ -44,10 +44,8 @@ class CacheElement(object):
         return cache
 
 class CalendarEntry(db.Model):
-    # Three List to simulate a list of trippel
-    summaries = db.StringListProperty()
-    dates = db.StringListProperty()
-    uids = db.StringListProperty()
+    # Stores a json string with a list of triples (summary, date and id)
+    details = db.TextProperty()
     created = db.DateTimeProperty(required=True)
 
 class CalendarEntryCache(CacheElement):
@@ -56,19 +54,13 @@ class CalendarEntryCache(CacheElement):
 
     def create(self, sid, tvdb):
         serie = tvdb[int(sid)]
-        summaries = []
-        dates = []
-        uids = []
-        for season in serie.values():
-            for episode in season.values():
-                if (episode['firstaired']):
-                    summaries.append('%s S%02dE%02d %s' % (serie['seriesname'], int(episode['seasonnumber']), int(episode['episodenumber']), episode['episodename']))
-                    dates.append(episode['firstaired'])
-                    uids.append(episode['id'])
+        details = [(episode['id'],
+                   ('%s S%02dE%02d %s' % (serie['seriesname'], int(episode['seasonnumber']), int(episode['episodenumber']), episode['episodename'])),
+                   episode['firstaired'])
+                    for season in serie.values()
+                        for episode in season.values()]
         return CalendarEntry(key_name=serie['id'],
-            summaries=summaries,
-            dates=dates,
-            uids=uids,
+            details=json.dumps(details),
             created=datetime.datetime.now())
 
 class Tvcal(webapp2.RequestHandler):
@@ -84,7 +76,7 @@ class Tvcal(webapp2.RequestHandler):
         cache = CalendarEntryCache()
         entries = [cache.query(sid) for sid in sids]
         for e in entries:
-            [cal.add_component(self.createEvent(*details)) for details in zip(e.uids, e.summaries, e.dates)]
+            [cal.add_component(self.createEvent(*detail)) for detail in json.loads(e.details)]
         return cal.to_ical()
     
     def createEvent(self, uid, summary, date):
