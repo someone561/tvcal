@@ -58,7 +58,8 @@ class CalendarEntryCache(CacheElement):
                    ('%s S%02dE%02d %s' % (serie['seriesname'], int(episode['seasonnumber']), int(episode['episodenumber']), episode['episodename'])),
                    episode['firstaired'])
                     for season in serie.values()
-                        for episode in season.values()]
+                        for episode in season.values()
+                        if (episode['firstaired'])]
         return CalendarEntry(key_name=serie['id'],
             details=json.dumps(details),
             created=datetime.datetime.now())
