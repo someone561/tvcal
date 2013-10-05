@@ -16,6 +16,11 @@
 <div class="clearfix"></div>
 <p class="text-info">Simple search your series and then copy the URL above and add to your calendar program.</p>
 
+<div class="alert alert-block alert-error fade" id="errorMessage">
+	<button data-dismiss="alert" class="close" type="button">×</button>
+	<h4 class="alert-heading">Search does not complete</h4>
+	<p>{{errorText}}</p>
+</div>
 <ul class="thumbnails">
 	<li class="span10" ng-repeat="serie in searchResult">
 		<div class="thumbnail">
