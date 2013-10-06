@@ -6,9 +6,13 @@ angular.module('tvcalApp')
 	$scope.searching = false;
 	$scope.submitSeach = function () {
 		$scope.searching = true;
+		$('#errorMessage').removeClass('in');
+		$scope.empty = false;
+		$scope.searchQuery = $scope.search;
 		$scope.searchResult = Series.query({search: $scope.search},
 		function () {
 			$scope.searching = false;
+			$scope.empty = $scope.searchResult.length === 0;
 		}, function (response) {
 			$scope.searching = false;
 			$('#errorMessage').addClass('in');

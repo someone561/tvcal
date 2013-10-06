@@ -24,6 +24,9 @@
 <div class="row text-center">
 	<img src="/images/ajax_loader_gray_128.gif" class="text-center" ng-show="searching" />
 </div>
+<div class="row text-center" ng-show="empty">
+	Sorry, but we could find no series for the Term "{{searchQuery}}". 
+</div>
 <ul class="thumbnails">
 	<li class="span10" ng-repeat="serie in searchResult">
 		<div class="thumbnail">
