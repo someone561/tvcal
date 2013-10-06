@@ -21,6 +21,9 @@
 	<h4 class="alert-heading">Search does not complete</h4>
 	<p>{{errorText}}</p>
 </div>
+<div class="row text-center">
+	<img src="/images/ajax_loader_gray_128.gif" class="text-center" ng-show="searching" />
+</div>
 <ul class="thumbnails">
 	<li class="span10" ng-repeat="serie in searchResult">
 		<div class="thumbnail">

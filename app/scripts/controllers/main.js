@@ -3,11 +3,14 @@
 
 angular.module('tvcalApp')
 .controller('MainCtrl', function ($scope, Series) {
+	$scope.searching = false;
 	$scope.submitSeach = function () {
+		$scope.searching = true;
 		$scope.searchResult = Series.query({search: $scope.search},
 		function () {
-			// do nothing additional on success
+			$scope.searching = false;
 		}, function (response) {
+			$scope.searching = false;
 			$('#errorMessage').addClass('in');
 			$scope.errorText = response.data + '. Statuscode was ' + response.status;
 		});
