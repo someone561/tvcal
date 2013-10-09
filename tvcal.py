@@ -66,7 +66,7 @@ class CalendarEntryCache(CacheElement):
 
 class Tvcal(webapp2.RequestHandler):
     def get(self, sids):
-        self.response.headers['Content-Type'] = 'text/calendar'
+        self.response.headers['Content-Type'] = 'text/calendar; charset=utf-8'
         self.response.out.write(self.getCalendar(sids.split(',')))
         
     def getCalendar(self, sids):
